@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LEA CAÑO - Sunflower Grading System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sun-yellow: #ffcc00;
+            --sun-dark: #f39c12;
+            --excel-green: #217346;
+            --glass: rgba(15, 15, 15, 0.95);
+            --text-light: #f5f5f5;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                        url('https://images.pexels.com/photos/1367192/pexels-photo-1367192.jpeg') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 2px solid var(--sun-yellow);
+            border-radius: 25px;
+            width: 100%;
+            max-width: 1200px;
+            padding: 40px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--sun-yellow);
+            padding-bottom: 15px;
+        }
+        .profile-name { color: var(--sun-yellow); font-weight: 800; font-size: 1.8rem; letter-spacing: 3px; margin: 0; }
+        .profile-title { color: #fff; font-size: 0.9rem; opacity: 0.9; font-weight: 600; text-transform: uppercase; }
+
+        h2 { color: var(--sun-yellow); text-align: center; text-transform: uppercase; letter-spacing: 2px; margin: 20px 0; }
+        
+        .input-group { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 12px; margin-bottom: 25px; }
+        .full-span { grid-column: 1 / -1; }
+
+        label { display: block; font-size: 0.7rem; color: var(--sun-yellow); margin-bottom: 5px; font-weight: 600; }
+        
+        input {
+            width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #444;
+            background: rgba(255,255,255,0.05); color: white; box-sizing: border-box;
+            font-size: 1rem; text-align: center;
+        }
+        input:focus { border-color: var(--sun-yellow); outline: none; background: rgba(255,255,255,0.1); }
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+        .section-tag {
+            grid-column: 1 / -1; background: linear-gradient(90deg, var(--sun-yellow), transparent);
+            padding: 6px 15px; border-radius: 4px; color: #000; font-weight: 800; font-size: 0.8rem; margin-top: 10px;
+        }
+
+        .btn-panel { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+        .btn {
+            flex: 1; padding: 15px; border-radius: 50px; border: none; font-weight: 800;
+            cursor: pointer; text-transform: uppercase; transition: 0.3s; font-size: 0.85rem;
+        }
+        .btn-save { background: var(--sun-yellow); color: #000; }
+        .btn-view { background: #3498db; color: #fff; }
+        .btn-sum { background: #9b59b6; color: #fff; }
+        .btn-back { background: #666; color: #fff; }
+        .btn:hover { transform: translateY(-3px); filter: brightness(1.1); }
+
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 9999; justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: #fff; color: #333; width: 95%; max-width: 1600px; height: 85vh;
+            border-radius: 15px; padding: 25px; overflow: auto; position: relative;
+            border: 5px solid var(--excel-green);
+        }
+
+        table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
+        th { background: var(--excel-green); color: white; padding: 12px; border: 1px solid #ccc; position: sticky; top: 0; }
+        td { padding: 10px; border: 1px solid #ddd; text-align: center; }
+        tr:nth-child(even) { background: #f2f2f2; }
+
+        .grade-total { background: #fff9c4 !important; font-weight: bold; }
+        .grade-final { background: #ffeb3b !important; font-weight: 900; font-size: 0.9rem; }
+
+        .close-btn { background: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; float: right; font-weight: bold; }
+        .action-btn { padding: 4px 8px; border-radius: 4px; border: none; color: white; cursor: pointer; font-size: 10px; font-weight: bold; margin: 0 2px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="profile-header">
+        <p class="profile-name">LEA CAÑO</p>
+        <p class="profile-title"> BSIT-3A Grading Portal</p>
+    </div>
+
+    <div id="setupScreen">
+        <h2>🌻 Setup Course</h2>
+        <div class="input-group">
+            <div class="full-span"><label>Course Description</label><input type="text" id="course" value="SYSTEM ANALYSIS AND DESIGN"></div>
+            <div class="full-span"><label>Year & Section</label><input type="text" id="section" placeholder="BSIT 3-A"></div>
+        </div>
+        <button class="btn btn-save" onclick="startGrading()">Proceed to Encoder</button>
+    </div>
+
+    <div id="encoderScreen" style="display:none;">
+        <h2 id="displayHead" style="font-size: 1.2rem;"></h2>
+        <div class="input-group">
+            <div class="full-span"><label>Student Name (Surname, First Name)</label><input type="text" id="stuName" style="text-align: left;"></div>
+            
+            <div class="section-tag">QUIZZES (20% - 330 items)</div>
+            <div><label>Q1</label><input type="number" id="q1" oninput="limit99(this)"></div>
+            <div><label>Q2</label><input type="number" id="q2" oninput="limit99(this)"></div>
+            <div><label>Q3</label><input type="number" id="q3" oninput="limit99(this)"></div>
+            <div><label>Q4</label><input type="number" id="q4" oninput="limit99(this)"></div>
+
+            <div class="section-tag">LABORATORY (30% - 400 items)</div>
+            <div><label>P1</label><input type="number" id="p1" oninput="limit99(this)"></div>
+            <div><label>P2</label><input type="number" id="p2" oninput="limit99(this)"></div>
+            <div><label>P3</label><input type="number" id="p3" oninput="limit99(this)"></div>
+            <div><label>P4</label><input type="number" id="p4" oninput="limit99(this)"></div>
+
+            <div class="section-tag">ASSIGNMENTS (10% )</div>
+            <div><label>A1</label><input type="number" id="a1" oninput="limit99(this)"></div>
+            <div><label>A2</label><input type="number" id="a2" oninput="limit99(this)"></div>
+
+            <div class="section-tag">OTHERS(Direct grades)</div>
+            <div><label>Attendance (10%)</label><input type="number" id="attd" oninput="limit99(this)"></div>
+            <div><label>Major Exam (30%)</label><input type="number" id="mid" oninput="limit99(this)"></div>
+        </div>
+
+        <div class="btn-panel">
+            <button class="btn btn-save" onclick="saveData()">Save Student</button>
+            <button class="btn btn-view" onclick="showModal('detailed')">View Detailed</button>
+            <button class="btn btn-sum" onclick="showModal('summary')">View Summary</button>
+            <button class="btn btn-back" onclick="goBackMain()">Back to Main</button>
+        </div>
+    </div>
+</div>
+
+<div id="tableModal" class="modal">
+    <div class="modal-content">
+        <button class="close-btn" onclick="closeModal()">CLOSE ✕</button>
+        <h2 id="modalTitle" style="color:var(--excel-green); text-align: left; font-size: 1.5rem;"></h2>
+        <div id="tableData"></div>
+    </div>
+</div>
+
+<script>
+    let students = JSON.parse(localStorage.getItem("lea_data")) || [];
+
+    function limit99(el) {
+        if (el.value.length > 2) el.value = el.value.slice(0, 2);
+        if (parseFloat(el.value) > 99) el.value = 99;
+    }
+
+    function startGrading() {
+        const sec = document.getElementById('section').value;
+        if(!sec) return alert("Please enter Section!");
+        document.getElementById('displayHead').innerText = document.getElementById('course').value + " | " + sec;
+        document.getElementById('setupScreen').style.display = 'none';
+        document.getElementById('encoderScreen').style.display = 'block';
+    }
+
+    function goBackMain() {
+        document.getElementById('setupScreen').style.display = 'block';
+        document.getElementById('encoderScreen').style.display = 'none';
+    }
+
+    function saveData() {
+        const name = document.getElementById('stuName').value;
+        if(!name) return alert("Student Name Required!");
+
+        const g = (id) => parseFloat(document.getElementById(id).value) || 0;
+
+        const qTot = g('q1')+g('q2')+g('q3')+g('q4');
+        const qEq = (qTot/330)*100;
+        const pTot = g('p1')+g('p2')+g('p3')+g('p4');
+        const pEq = (pTot/400)*100;
+        const aTot = g('a1')+g('a2');
+        const aEq = (aTot/100)*100;
+
+        const final = (qEq*0.2) + (pEq*0.3) + (aEq*0.1) + (g('attd')*0.1) + (g('mid')*0.3);
+
+        const entry = {
+            id: Date.now(),
+            name: name.toUpperCase(),
+            q: [g('q1'), g('q2'), g('q3'), g('q4'), qTot, qEq.toFixed(2), (qEq*0.2).toFixed(2)],
+            p: [g('p1'), g('p2'), g('p3'), g('p4'), pTot, pEq.toFixed(2), (pEq*0.3).toFixed(2)],
+            a: [g('a1'), g('a2'), aTot, aEq.toFixed(2), (aEq*0.1).toFixed(2)],
+            o: [g('attd'), g('mid')],
+            gr: final.toFixed(2)
+        };
+
+        students.push(entry);
+        localStorage.setItem("lea_data", JSON.stringify(students));
+        
+        document.getElementById('stuName').value = "";
+        document.querySelectorAll('#encoderScreen input[type="number"]').forEach(i => i.value = "");
+        alert("Student Saved!");
+    }
+
+    function showModal(mode) {
+        students.sort((a,b) => a.name.localeCompare(b.name));
+        const div = document.getElementById('tableData');
+        const title = document.getElementById('modalTitle');
+        let html = `<table>`;
+
+        if(mode === 'detailed') {
+            title.innerText = "Detailed Grade Sheet";
+            html += `<thead><tr><th rowspan="2">Student Name</th><th colspan="7">Quizzes (20%)</th><th colspan="7">Laboratory (30%)</th><th colspan="5">Assign (10%)</th><th colspan="2">Other</th><th rowspan="2">Final</th><th rowspan="2">Actions</th></tr>
+                    <tr><th>Q1</th><th>Q2</th><th>Q3</th><th>Q4</th><th>T</th><th>Eq</th><th>20%</th><th>P1</th><th>P2</th><th>P3</th><th>P4</th><th>T</th><th>Eq</th><th>30%</th><th>A1</th><th>A2</th><th>T</th><th>Eq</th><th>10%</th><th>AT</th><th>EX</th></tr></thead><tbody>`;
+            students.forEach(s => {
+                html += `<tr><td style="text-align:left; font-weight:bold;">${s.name}</td>
+                <td>${s.q[0]}</td><td>${s.q[1]}</td><td>${s.q[2]}</td><td>${s.q[3]}</td><td class="grade-total">${s.q[4]}</td><td>${s.q[5]}</td><td>${s.q[6]}</td>
+                <td>${s.p[0]}</td><td>${s.p[1]}</td><td>${s.p[2]}</td><td>${s.p[3]}</td><td class="grade-total">${s.p[4]}</td><td>${s.p[5]}</td><td>${s.p[6]}</td>
+                <td>${s.a[0]}</td><td>${s.a[1]}</td><td class="grade-total">${s.a[2]}</td><td>${s.a[3]}</td><td>${s.a[4]}</td>
+                <td>${s.o[0]}</td><td>${s.o[1]}</td><td class="grade-final">${s.gr}</td>
+                <td><button class="action-btn" style="background:#f39c12" onclick="editRow(${s.id})">EDIT</button><button class="action-btn" style="background:#e74c3c" onclick="deleteRow(${s.id},'detailed')">DEL</button></td></tr>`;
+            });
+        } else {
+            title.innerText = "Class Summary Report";
+            html += `<thead><tr><th>Rank</th><th>Student Name</th><th>Final Grade</th><th>Actions</th></tr></thead><tbody>`;
+            students.sort((a,b) => b.gr - a.gr).forEach((s, i) => {
+                html += `<tr><td>${i+1}</td><td style="text-align:left; font-weight:bold;">${s.name}</td><td class="grade-final">${s.gr}</td>
+                <td><button class="action-btn" style="background:#f39c12" onclick="editRow(${s.id})">EDIT</button><button class="action-btn" style="background:#e74c3c" onclick="deleteRow(${s.id},'summary')">DEL</button></td></tr>`;
+            });
+        }
+        div.innerHTML = html + `</tbody></table>`;
+        document.getElementById('tableModal').style.display = 'flex';
+    }
+
+    function deleteRow(id, mode) {
+        if(confirm("Delete this student?")) {
+            students = students.filter(s => s.id !== id);
+            localStorage.setItem("lea_data", JSON.stringify(students));
+            showModal(mode);
+        }
+    }
+
+    function editRow(id) {
+        const s = students.find(x => x.id === id);
+        if(s) {
+            document.getElementById('stuName').value = s.name;
+            document.getElementById('q1').value = s.q[0]; document.getElementById('q2').value = s.q[1];
+            document.getElementById('q3').value = s.q[2]; document.getElementById('q4').value = s.q[3];
+            document.getElementById('p1').value = s.p[0]; document.getElementById('p2').value = s.p[1];
+            document.getElementById('p3').value = s.p[2]; document.getElementById('p4').value = s.p[3];
+            document.getElementById('a1').value = s.a[0]; document.getElementById('a2').value = s.a[1];
+            document.getElementById('attd').value = s.o[0]; document.getElementById('mid').value = s.o[1];
+            students = students.filter(x => x.id !== id);
+            localStorage.setItem("lea_data", JSON.stringify(students));
+            closeModal();
+            alert("Data Loaded. Edit and Save again.");
+        }
+    }
+
+    function closeModal() { document.getElementById('tableModal').style.display = 'none'; }
+</script>
+</body>
+</html>
+
+              
